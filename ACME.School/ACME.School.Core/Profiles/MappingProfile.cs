@@ -11,6 +11,8 @@ namespace ACME.School.Core.Profiles
             CreateMap<Contract, ContractModel>().ReverseMap();
             CreateMap<Student, StudentModel>().ReverseMap();
             CreateMap<Course, CourseModel>().ReverseMap();
+            CreateMap<Student, CreateStudentModel>().ReverseMap();
+            CreateMap<Course, CreateCourseModel>().ReverseMap();
         }
     }
 }

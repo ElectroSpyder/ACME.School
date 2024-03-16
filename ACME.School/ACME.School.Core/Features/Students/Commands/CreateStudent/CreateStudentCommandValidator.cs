@@ -1,13 +1,14 @@
-﻿using ACME.School.Core.Persistences;
+﻿using ACME.School.Core.Domain.Entities;
+using ACME.School.Core.Persistences;
 using FluentValidation;
 
 namespace ACME.School.Core.Features.Students.Commands.CreateStudent
 {
     public class CreateStudentCommandValidator: AbstractValidator<CreateStudentCommand>
     {
-        private readonly IStudentrepository _studentRepository;
+        private readonly IAsyncRepository<Student> _studentRepository;
 
-        public CreateStudentCommandValidator(IStudentrepository studentRepository)
+        public CreateStudentCommandValidator(IAsyncRepository<Student> studentRepository)
         {
             _studentRepository = studentRepository;
             RuleFor(x => x.Age).NotEmpty()
