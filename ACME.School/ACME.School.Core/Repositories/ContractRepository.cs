@@ -11,10 +11,6 @@ namespace ACME.School.Core.Repositories
         {
             
         }
-        //public Task<bool> AddStudentToCourse(Guid studentId, Guid courseId, bool paidStatus)
-        //{
-        //    throw new NotImplementedException();
-        //}
 
         public async Task<List<Contract>> GetAllContractsInRangeDate(DateTime startDate, DateTime endDate)
         {
