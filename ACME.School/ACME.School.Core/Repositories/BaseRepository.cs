@@ -1,6 +1,7 @@
 ﻿using ACME.School.Core.Domain.Context;
 using ACME.School.Core.Persistences;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace ACME.School.Core.Repositories
 {
@@ -38,6 +39,11 @@ namespace ACME.School.Core.Repositories
         public async Task<IReadOnlyList<T>> ListAllAsync()
         {
             return await _context.Set<T>().ToListAsync();
+        }
+
+        public async Task<IReadOnlyList<T>> SelectAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _context.Set<T>().Where(predicate).ToListAsync();
         }
 
         public async Task UpdateAsync(T entity)

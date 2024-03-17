@@ -38,7 +38,7 @@ namespace ACME.School.Core.Tests.Students.Queries.GetStudentWithCourse
             var handler = new GetStudentWithCourseQueryHandler(_contractRespository.Object,_studentRepository.Object,_courseRepository.Object, _mapper);
             var result = await handler.Handle(new GetStudentWithCourseQuery { StartDate = DateTime.Now, EndDate = DateTime.Now }, CancellationToken.None);
             result.ShouldBeOfType<List<StudentWithCoursesVm>>();
-
+            result.Count.ShouldBe(1);
             //var resultWithCourses = await _contractRespository.Object.GetAllContractsInRangeDate(DateTime.Now.AddDays(-82), DateTime.Now.AddDays(40));
 
             //resultWithCourses.ShouldNotBeNull();

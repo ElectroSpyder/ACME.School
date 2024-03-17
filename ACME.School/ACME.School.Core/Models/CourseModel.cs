@@ -2,6 +2,7 @@
 {
     public class CourseModel
     {
+        public Guid CourseId { get; set; }
         public string CourseName { get; set; } = string.Empty;
         public decimal CourseCost { get; set; }
         public DateTime StartDate { get; set; }

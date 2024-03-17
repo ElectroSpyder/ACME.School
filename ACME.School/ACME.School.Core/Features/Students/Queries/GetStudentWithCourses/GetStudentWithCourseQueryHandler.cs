@@ -22,10 +22,10 @@ namespace ACME.School.Core.Features.Students.Queries.GetStudentWithCourses
 
         public async Task<List<StudentWithCoursesVm>> Handle(GetStudentWithCourseQuery request, CancellationToken cancellationToken)
         {
-            var contracts = await _contractRepository.GetAllContractsInRangeDate(request.StartDate, request.EndDate);
-
+            //var contracts = await _contractRepository.GetAllContractsInRangeDate(request.StartDate, request.EndDate);
+            var contracts = await _contractRepository.SelectAsync(x => x.InscriptionDate >= request.StartDate && x.InscriptionDate <= request.EndDate);
             var listStudent = new List<StudentWithCoursesVm>();
-
+            
             if(contracts == null) return listStudent;
 
             foreach (var contract in contracts)
@@ -43,15 +43,21 @@ namespace ACME.School.Core.Features.Students.Queries.GetStudentWithCourses
                     }
                 }
                 else
-                {               
-                    listStudent.Add(new StudentWithCoursesVm
-                    {
-                        Student = _mapper.Map<StudentModel>(
+                {
+                    var getSstudent = _mapper.Map<StudentModel>(
                             await _studentRepository.GetByIdAsync(
-                                contract.StudentId)),
-                        Courses = _mapper.Map<List<CourseModel>>(
-                            await _courseRepository.GetByIdAsync(contract.CourseId))
-                    });
+                                contract.StudentId));
+                    var getCourse = _mapper.Map<CourseModel>(
+                            await _courseRepository.GetByIdAsync(
+                                contract.CourseId));
+
+                    var studentWithCourses = new StudentWithCoursesVm
+                    {
+                        Student = getSstudent,
+                        Courses = [getCourse]
+                    };
+
+                    listStudent.Add(studentWithCourses);
                 }
                 
             }

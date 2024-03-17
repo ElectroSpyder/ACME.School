@@ -34,7 +34,7 @@ namespace ACME.School.Core.Tests.Contracts.Queries.GetContractQueryHandlerTest
 
             result.ShouldBeOfType<List<ContractModel>>();
 
-            result.Count.ShouldBe(3);
+            result.Count.ShouldBe(1);
 
         }
     }

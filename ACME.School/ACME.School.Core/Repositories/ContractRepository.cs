@@ -11,12 +11,5 @@ namespace ACME.School.Core.Repositories
         {
             
         }
-
-        public async Task<List<Contract>> GetAllContractsInRangeDate(DateTime startDate, DateTime endDate)
-        {
-            var contracts = await _context.Contracts
-                .Where(c => c.InscriptionDate >= startDate && c.InscriptionDate <= endDate).ToListAsync();
-            return contracts;
-        }
     }
 }
