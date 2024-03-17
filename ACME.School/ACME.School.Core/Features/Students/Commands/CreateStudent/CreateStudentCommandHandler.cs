@@ -8,10 +8,10 @@ namespace ACME.School.Core.Features.Students.Commands.CreateStudent
 {
     public class CreateStudentCommandHandler : IRequestHandler<CreateStudentCommand, CreateStudentCommandReponse>
     {
-        private readonly IAsyncRepository<Student> _studentRepository;
+        private readonly IStudentRepository _studentRepository;
         private readonly IMapper _mapper;
 
-        public CreateStudentCommandHandler(IAsyncRepository<Student> studentRepository, IMapper mapper)
+        public CreateStudentCommandHandler(IStudentRepository studentRepository, IMapper mapper)
         {
             _studentRepository = studentRepository;
             _mapper = mapper;

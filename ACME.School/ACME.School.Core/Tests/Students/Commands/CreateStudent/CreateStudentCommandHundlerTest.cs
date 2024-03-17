@@ -13,7 +13,7 @@ namespace ACME.School.Core.Tests.Students.Commands.CreateStudent
     public class CreateStudentCommandHundlerTest
     {
         private readonly IMapper _mapper;
-        private readonly Mock<IAsyncRepository<Student>> _studentRepositoryMock;
+        private readonly Mock<IStudentRepository> _studentRepositoryMock;
 
         public CreateStudentCommandHundlerTest()
         {

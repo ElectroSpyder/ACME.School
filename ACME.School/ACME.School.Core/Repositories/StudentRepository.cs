@@ -4,7 +4,7 @@ using ACME.School.Core.Persistences;
 
 namespace ACME.School.Core.Repositories
 {
-    public class StudentRepository : BaseRepository<Student>, IStudentrepository
+    public class StudentRepository : BaseRepository<Student>, IStudentRepository
     {
         public StudentRepository(SqlDbContext context) : base(context)
         {

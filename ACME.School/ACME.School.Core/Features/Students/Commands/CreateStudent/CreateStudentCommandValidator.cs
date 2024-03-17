@@ -6,9 +6,9 @@ namespace ACME.School.Core.Features.Students.Commands.CreateStudent
 {
     public class CreateStudentCommandValidator: AbstractValidator<CreateStudentCommand>
     {
-        private readonly IAsyncRepository<Student> _studentRepository;
+        private readonly IStudentRepository _studentRepository;
 
-        public CreateStudentCommandValidator(IAsyncRepository<Student> studentRepository)
+        public CreateStudentCommandValidator(IStudentRepository studentRepository)
         {
             _studentRepository = studentRepository;
             RuleFor(x => x.Age).NotEmpty()

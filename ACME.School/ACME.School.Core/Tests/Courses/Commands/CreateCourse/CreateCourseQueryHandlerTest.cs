@@ -1,5 +1,4 @@
-﻿using ACME.School.Core.Domain.Entities;
-using ACME.School.Core.Features.Courses.Commands.CreateCourse;
+﻿using ACME.School.Core.Features.Courses.Commands.CreateCourse;
 using ACME.School.Core.Persistences;
 using ACME.School.Core.Profiles;
 using ACME.School.Core.Tests.Mocks;
@@ -41,5 +40,6 @@ namespace ACME.School.Core.Tests.Courses.Commands.CreateCourse
             var allCourses = await _mockCourseRepository.Object.ListAllAsync();
             allCourses.Count.ShouldBe(3);
         }
+
     }
 }

@@ -35,7 +35,7 @@ namespace ACME.School.Core.Repositories
             return await _context.Set<T>().FindAsync(id);
         }
 
-        public async Task<IReadOnlyList<T>>     ListAllAsync()
+        public async Task<IReadOnlyList<T>> ListAllAsync()
         {
             return await _context.Set<T>().ToListAsync();
         }

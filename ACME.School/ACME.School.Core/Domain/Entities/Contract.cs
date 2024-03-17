@@ -9,6 +9,7 @@ namespace ACME.School.Core.Domain.Entities
         public Guid StudentId { get; set; }
         public Guid CourseId { get; set; }
         public Student Student { get; set; }
-        public Course Course { get; set; } 
+        public Course Course { get; set; }
+        public bool Paid { get; set; }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace ACME.School.Core.Persistences
 {
-    public interface IStudentrepository : IAsyncRepository<Student>
+    public interface IStudentRepository : IAsyncRepository<Student>
     {
         
     }
