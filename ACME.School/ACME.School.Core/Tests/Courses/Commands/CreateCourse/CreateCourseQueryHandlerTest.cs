@@ -29,6 +29,7 @@ namespace ACME.School.Core.Tests.Courses.Commands.CreateCourse
         public  async Task Handle_ValidCourse_AddToCourseRepository()
         {
             var handler = new CreateCourseCommandHandler(_mockCourseRepository.Object, _mapper);
+
             await handler.Handle(new CreateCourseCommand()
             {
                 CourseName = "Flujo de Datos",

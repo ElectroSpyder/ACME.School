@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Ardalis.GuardClauses;
+using MediatR;
 
 namespace ACME.School.Core.Features.Courses.Commands.CreateCourse
 {
@@ -8,6 +9,7 @@ namespace ACME.School.Core.Features.Courses.Commands.CreateCourse
         public decimal CourseCost { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+      
 
     }
 }

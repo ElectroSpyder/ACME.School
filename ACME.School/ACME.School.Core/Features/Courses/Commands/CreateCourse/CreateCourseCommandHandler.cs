@@ -19,22 +19,20 @@ namespace ACME.School.Core.Features.Courses.Commands.CreateCourse
 
         public async Task<CreateCourseCommandResponse> Handle(CreateCourseCommand request, CancellationToken cancellationToken)
         {
-            var response = new CreateCourseCommandResponse();
-            var validator = new CreateCourseCommandValidator(_courseRepository);
-            var validationResult = await validator.ValidateAsync(request, cancellationToken);
-
-            if (validationResult.Errors.Count > 0)
+            try
             {
-                response.Success = false;
-                response.ValidationErrors = [];
-                foreach (var error in validationResult.Errors)
+                var response = new CreateCourseCommandResponse
                 {
-                    response.ValidationErrors.Add(error.ErrorMessage);
-                }
-            }
+                    Course = new CreateCourseModel
+                                (
+                                    request.CourseName,
+                                    request.CourseCost,
+                                    request.StartDate,
+                                    request.EndDate
+                                ),
+                    Success = true
+                };
 
-            if(response.Success)
-            {
                 var course = new Course
                 {
                     CourseName = request.CourseName,
@@ -44,9 +42,46 @@ namespace ACME.School.Core.Features.Courses.Commands.CreateCourse
                 };
                 course = await _courseRepository.AddAsync(course);
                 response.Course = _mapper.Map<CreateCourseModel>(course);
+                return response;
             }
+            catch (Exception ex)
+            {
 
-            return response;
+                return new CreateCourseCommandResponse
+                {
+                    Success = false,
+                    ValidationErrors = [ex.Message]
+                };
+            }
+           
+
+            //var validator = new CreateCourseCommandValidator(_courseRepository);
+            //var validationResult = await validator.ValidateAsync(request, cancellationToken);
+
+            //if (validationResult.Errors.Count > 0)
+            //{
+            //    response.Success = false;
+            //    response.ValidationErrors = [];
+            //    foreach (var error in validationResult.Errors)
+            //    {
+            //        response.ValidationErrors.Add(error.ErrorMessage);
+            //    }
+            //}
+
+            //if(response.Success)
+            //{
+            //    var course = new Course
+            //    {
+            //        CourseName = request.CourseName,
+            //        StartDate = request.StartDate,
+            //        EndDate = request.EndDate,
+            //        CourseCost = request.CourseCost
+            //    };
+            //    course = await _courseRepository.AddAsync(course);
+            //    response.Course = _mapper.Map<CreateCourseModel>(course);
+            //}
+
+            //return response;
         }
     }
 }
