@@ -2,6 +2,7 @@
 using ACME.School.Core.Persistences;
 using AutoMapper;
 using MediatR;
+using System.Data;
 
 namespace ACME.School.Core.Features.Students.Queries.GetStudentWithCourses
 {
@@ -25,43 +26,80 @@ namespace ACME.School.Core.Features.Students.Queries.GetStudentWithCourses
             //var contracts = await _contractRepository.GetAllContractsInRangeDate(request.StartDate, request.EndDate);
             var contracts = await _contractRepository.SelectAsync(x => x.InscriptionDate >= request.StartDate && x.InscriptionDate <= request.EndDate);
             var listStudent = new List<StudentWithCoursesVm>();
-            
-            if(contracts == null) return listStudent;
 
-            foreach (var contract in contracts)
-            {
-                if(listStudent.Count > 0)
+            if (contracts == null) return listStudent;
+
+            //obtener ids de estudiantes relevantes
+            var studentsIds = contracts.Select(x => x.StudentId).Distinct().ToList();
+
+            //obtener todos los estudiantes segun el listado de ids
+            var students = await _studentRepository.SelectAsync(s => studentsIds.Contains(s.StudentId));
+
+            //obtener todos los cursos segun el contrato
+            var courses = await _courseRepository
+                .SelectAsync(co => contracts
+                                    .Select(contract => contract.CourseId)
+                                    .Contains(co.CourseId));
+
+            //ahora joins entre Cursos, Contratos y Estudiantes
+
+            var result = contracts
+                .Join(students,
+                        contract => contract.StudentId,
+                        student => student.StudentId,
+                        (contract, student) => new { contract, student })
+                .Join(courses, joined => joined.contract.CourseId, course => course.CourseId,
+                     (joined, course) => new { joined.contract, joined.student, course })
+                .Select(joined => new { joined.contract, joined.student, joined.course })
+                .ToList();
+
+            // una agrupación para ordenar
+
+            var resultGrouped = result
+                .GroupBy(j => j.student.StudentId)
+                .Select(group => new StudentWithCoursesVm
                 {
-                    foreach (var studentModel in listStudent)
-                    {
-                        if(studentModel.Student.StudentId == contract.StudentId)
-                        {
-                            studentModel.Courses.Add(
-                                _mapper.Map<CourseModel>(
-                                    await _courseRepository.GetByIdAsync(contract.CourseId)));
-                        }
-                    }
-                }
-                else
-                {
-                    var getSstudent = _mapper.Map<StudentModel>(
-                            await _studentRepository.GetByIdAsync(
-                                contract.StudentId));
-                    var getCourse = _mapper.Map<CourseModel>(
-                            await _courseRepository.GetByIdAsync(
-                                contract.CourseId));
+                    Student = _mapper.Map<StudentModel>(group.First().student),
+                    Courses = group.Select(j => _mapper.Map<CourseModel>(j.course)).ToList(),
+                })
+                .ToList();
+            return resultGrouped;
 
-                    var studentWithCourses = new StudentWithCoursesVm
-                    {
-                        Student = getSstudent,
-                        Courses = [getCourse]
-                    };
+            // este metodo funciona pero no usa linq
+            //foreach (var contract in contracts)
+            //{
+            //    if (listStudent.Count > 0)
+            //    {
+            //        foreach (var studentModel in listStudent)
+            //        {
+            //            if (studentModel.Student.StudentId == contract.StudentId)
+            //            {
+            //                studentModel.Courses.Add(
+            //                    _mapper.Map<CourseModel>(
+            //                        await _courseRepository.GetByIdAsync(contract.CourseId)));
+            //            }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        var getSstudent = _mapper.Map<StudentModel>(
+            //                await _studentRepository.GetByIdAsync(
+            //                    contract.StudentId));
+            //        var getCourse = _mapper.Map<CourseModel>(
+            //                await _courseRepository.GetByIdAsync(
+            //                    contract.CourseId));
 
-                    listStudent.Add(studentWithCourses);
-                }
-                
-            }
-            return listStudent;
+            //        var studentWithCourses = new StudentWithCoursesVm
+            //        {
+            //            Student = getSstudent,
+            //            Courses = [getCourse]
+            //        };
+
+            //        listStudent.Add(studentWithCourses);
+            //    }
+
+            //}
+            //return listStudent;
         }
     }
 }

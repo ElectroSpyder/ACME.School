@@ -7,7 +7,7 @@ namespace ACME.School.Core.Tests.Mocks
 {
     public class RepositoryMock
     {
-        public static DateTime Today { get { return DateTime.Now; }  }
+        public static DateTime Today { get { return DateTime.Now; } }
         public static Mock<ICourseRepository> GetCourseRepository()
         {
             var courseOne = new Course
@@ -37,6 +37,13 @@ namespace ACME.School.Core.Tests.Mocks
             var mockCourseRepository = new Mock<ICourseRepository>();
             mockCourseRepository.Setup(repo => repo.ListAllAsync()).ReturnsAsync(courses);
             mockCourseRepository.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(courseOne);
+
+            mockCourseRepository.Setup(repo => repo.SelectAsync(It.IsAny<Expression<Func<Course, bool>>>()))
+                .ReturnsAsync((Expression<Func<Course, bool>> predicate) =>
+                {
+                    return courses.Where(predicate.Compile()).ToList();
+                });
+
             mockCourseRepository.Setup(repo => repo.AddAsync(It.IsAny<Course>())).ReturnsAsync(
                 (Course course) =>
                 {
@@ -53,7 +60,7 @@ namespace ACME.School.Core.Tests.Mocks
                 FirstName = "Pedro",
                 LastName = "Gonzalez",
                 Age = 45,
-                 Contracts = []
+                Contracts = []
             };
 
             var studentDos = new Student
@@ -66,15 +73,20 @@ namespace ACME.School.Core.Tests.Mocks
             };
 
             var students = new List<Student>
-            { 
+            {
                 studentOne,
-                studentDos              
+                studentDos
             };
-            
+
             var mockStudentRepository = new Mock<IStudentRepository>();
-            
+
             mockStudentRepository.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(studentOne);
             mockStudentRepository.Setup(repo => repo.ListAllAsync()).ReturnsAsync(students);
+            mockStudentRepository.Setup(repo => repo.SelectAsync(It.IsAny<Expression<Func<Student, bool>>>()))
+                .ReturnsAsync((Expression<Func<Student, bool>> predicate) =>
+            {
+                return students.Where(predicate.Compile()).ToList();
+            });
 
             mockStudentRepository.Setup(repo => repo.AddAsync(It.IsAny<Student>())).ReturnsAsync(
                 (Student student) =>
@@ -85,7 +97,7 @@ namespace ACME.School.Core.Tests.Mocks
 
             return mockStudentRepository;
         }
-                
+
         public static Mock<IContractRespository> GetContractRespository()
         {
             var courseOne = new Course
@@ -96,7 +108,7 @@ namespace ACME.School.Core.Tests.Mocks
                 EndDate = Today.AddDays(30),
                 CourseCost = 134.98m
             };
-            
+
             var studentOne = new Student
             {
                 StudentId = Guid.Parse("60dc1dc0-2634-46f8-a336-29334a15c994"),
@@ -124,16 +136,16 @@ namespace ACME.School.Core.Tests.Mocks
                       CourseId =  Guid.Parse("789e4356-745f-4903-9515-aacf619c4e2c"),
                       Course = courseOne,
                       Paid = true
-                }               
+                }
             };
-            
-            var mockContractRepository = new Mock<IContractRespository>();            
+
+            var mockContractRepository = new Mock<IContractRespository>();
 
             mockContractRepository.Setup(repo =>
                 repo.SelectAsync(It.IsAny<Expression<Func<Contract, bool>>>())).ReturnsAsync(contracts);
-            
+
             mockContractRepository.Setup(repo => repo.ListAllAsync()).ReturnsAsync(contracts);
-            
+
             return mockContractRepository;
         }
     }

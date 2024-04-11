@@ -35,7 +35,12 @@ namespace ACME.School.Core.Tests.Students.Queries.GetStudentWithCourse
         [Fact]
         public async Task GetStudentWithCourseTest()
         {
-            var handler = new GetStudentWithCourseQueryHandler(_contractRespository.Object,_studentRepository.Object,_courseRepository.Object, _mapper);
+            var handler = new GetStudentWithCourseQueryHandler(
+                                    _contractRespository.Object,
+                                    _studentRepository.Object,
+                                    _courseRepository.Object, 
+                                    _mapper);
+
             var result = await handler.Handle(new GetStudentWithCourseQuery { StartDate = DateTime.Now, EndDate = DateTime.Now }, CancellationToken.None);
             result.ShouldBeOfType<List<StudentWithCoursesVm>>();
             result.Count.ShouldBe(1);
